@@ -5,9 +5,8 @@ import './Header.css'
 const Header = () => {
 
   const menuitem = <>
-    <li><a><NavLink to='/'>Home</NavLink></a></li>
-    <li><a><NavLink to='/element'>Element</NavLink></a></li>
-    <li><a><NavLink to='/'>contact</NavLink></a></li>
+    <li className='rounded-none'><NavLink to='/'>Home</NavLink></li>
+    <li className='rounded-none'><NavLink to='/element'>Element</NavLink></li>
   </>
 
     return (
