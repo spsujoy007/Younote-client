@@ -6,8 +6,11 @@ const AddNote = () => {
 
     const [modal, setModal] = useState(true)
     
-    // const handleModalTrue = () => {
-    // }
+    const [color, setColor] = useState('#ffffff');
+
+    const handleColor = (hexcode) => {
+        setColor(hexcode)
+    }
     
     const handleAddNote = (event) => {
         event.preventDefault();
@@ -18,8 +21,47 @@ const AddNote = () => {
         console.log(notetitle, note, picture)
         setModal(false)
         setTimeout(setModal(true), 6000);
-        alert('Note added successfully')
+
+        const currentdate = new Date();
+        const date = currentdate.toLocaleDateString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+
+            const imgbbsecret = process.env.REACT_APP_IMGGBB_SECRET;
+            const formData = new FormData();
+            formData.append('image', picture);
+            const url = `https://api.imgbb.com/1/upload?key=${imgbbsecret}`;
+            fetch( url, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(pictureData => {
+                console.log(pictureData);
+                const mynote = {
+                    title: notetitle,
+                    note: note,
+                    picture: pictureData.data.url,
+                    bgcolor: color,
+                    date
+                }
+                
+                fetch('http://localhost:5000/addnote', {
+                    method: 'POST',
+                    headers: {
+                        "content-type": "application/json"
+                    },
+                    body: JSON.stringify(mynote)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    
+                })
+            })
+
         form.reset()
+
     }
 
     return (
@@ -61,6 +103,14 @@ const AddNote = () => {
         </div>
 
         <div>
+            <div className='flex gap-x-3 p-5'>
+                <button onClick={() => handleColor('#FF6464')} className='bg-[#FF6464] w-8 h-8 rounded-md shadow-md'></button>
+                <button onClick={() => handleColor('#453C67')} className='bg-[#453C67] w-8 h-8 rounded-md shadow-md'></button>
+                <button onClick={() => handleColor('#ffffff')} className='bg-[#ffffff] w-8 h-8 rounded-md shadow-md'></button>
+                <button onClick={() => handleColor('#54B435')} className='bg-[#54B435] w-8 h-8 rounded-md shadow-md'></button>
+                <button onClick={() => handleColor('#100F0F')} className='bg-[#100F0F] w-8 h-8 rounded-md shadow-md'></button>
+                <button onClick={() => handleColor('#C70039')} className='bg-[#C70039] w-8 h-8 rounded-md shadow-md'></button>
+            </div>
             <button type='submit' className='btn btn-primary w-full text-white'>Add note</button>
         </div>
 
